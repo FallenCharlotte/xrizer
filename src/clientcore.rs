@@ -178,6 +178,8 @@ impl IVRClientCore003_Interface for ClientCore {
                         .force(|_| Input::new(data.clone()))
                         .SetActionManifestPath(path.as_ptr());
                 }
+                data.input
+                    .force(|_| Input::new(data.clone()));
                 *self.openxr.write().unwrap() = Some(data);
 
                 vr::EVRInitError::None
