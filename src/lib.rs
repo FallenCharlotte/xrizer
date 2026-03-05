@@ -26,6 +26,7 @@ use std::sync::{
     Arc,
     atomic::{AtomicU32, AtomicU64, Ordering},
 };
+use chrono::Utc;
 
 macro_rules! warn_unimplemented {
     ($function:literal) => {
@@ -127,11 +128,13 @@ fn init_logging() {
 
             let state_dir = std::env::var("XDG_STATE_HOME")
                 .or_else(|_| std::env::var("HOME").map(|h| h + "/.local/state"));
-
+            
+            let now = Utc::now();
+            
             if let Ok(state) = state_dir {
                 let path = Path::new(&state).join("xrizer");
                 let mut setup = || {
-                    let path = path.join("xrizer.txt");
+                    let path = path.join("xrizer-".to_owned()+&now.to_rfc3339()+".txt");
                     match std::fs::File::create(path) {
                         Ok(file) => {
                             let writer = ComboWriter(file, std::io::stderr());
