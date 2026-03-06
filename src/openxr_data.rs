@@ -629,7 +629,7 @@ impl SessionData {
         match origin {
             vr::ETrackingUniverseOrigin::Seated => &self.local_space_adjusted,
             vr::ETrackingUniverseOrigin::Standing => &self.stage_space_adjusted,
-            vr::ETrackingUniverseOrigin::RawAndUncalibrated => unreachable!(),
+            vr::ETrackingUniverseOrigin::RawAndUncalibrated => &self.stage_space_adjusted,
         }
     }
 
@@ -648,7 +648,7 @@ impl SessionData {
         match self.current_origin {
             vr::ETrackingUniverseOrigin::Seated => xr::ReferenceSpaceType::LOCAL,
             vr::ETrackingUniverseOrigin::Standing => xr::ReferenceSpaceType::STAGE,
-            vr::ETrackingUniverseOrigin::RawAndUncalibrated => unreachable!(),
+            vr::ETrackingUniverseOrigin::RawAndUncalibrated => xr::ReferenceSpaceType::STAGE,
         }
     }
 
