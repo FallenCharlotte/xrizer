@@ -449,6 +449,10 @@ impl<C: openxr_data::Compositor> Input<C> {
 
         let session_data = self.openxr.session_data.get();
         let devices = session_data.input_data.devices.read().unwrap();
+        
+        if !session_data.is_real_session() {
+            self.openxr.display_time.set(xr::Time::from_nanos(1));
+        }
 
         for (i, pose) in poses.iter_mut().enumerate() {
             let device = devices.get_device(i as u32);
