@@ -1417,7 +1417,7 @@ impl<C: openxr_data::Compositor> Input<C> {
     pub fn frame_start_update(&self) {
         tracy_span!();
         let data = self.openxr.session_data.get();
-        let devices = data.input_data.devices.read().unwrap();
+        let mut devices = data.input_data.devices.write().unwrap();
 
         for device in devices.iter() {
             device.clear_pose_cache();
@@ -1474,12 +1474,15 @@ impl<C: openxr_data::Compositor> Input<C> {
                 // 2. restart session to attach action manifest
                 // 3. restart to use real session
                 if !data.is_real_session() {
-                    debug!(
-                        "Couldn't set up legacy actions because we're not in the real session yet."
+                    log::info!(
+                        "Doing funny legacy actions on a fake instance!"
                     );
-                    return;
                 }
                 self.setup_legacy_actions();
+                
+                #[cfg(feature = "monado")]
+                devices
+                    .create_monado_generic_trackers(&self.openxr, &data);
             }
         }
     }
